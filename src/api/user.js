@@ -2,23 +2,22 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/tiantian_blog_ui/user/login',
+    url: '/base/login',
     method: 'post',
-    data
+    data: data
   })
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/tiantian_blog_ui/user/info',
-    method: 'get',
-    params: { token }
+    url: '/base/user/info',
+    method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: '/tiantian_blog_ui/user/logout',
+    url: '/base/logout',
     method: 'post'
   })
 }
