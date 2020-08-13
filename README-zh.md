@@ -3,6 +3,7 @@
 > 这是一个极简的 vue admin 管理后台。它只包含了 Element UI & axios & iconfont & permission control & lint，这些搭建后台必要的东西。
 
 [线上地址](http://panjiachen.github.io/tiantian_blog_ui)
+[git地址](https://github.com/PanJiaChen/vue-element-admin.git)
 
 [国内访问](https://panjiachen.gitee.io/tiantian_blog_ui)
 
