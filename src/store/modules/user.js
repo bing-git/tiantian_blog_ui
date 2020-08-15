@@ -5,6 +5,7 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
+    id: '',
     name: '',
     avatar: ''
   }
@@ -13,11 +14,17 @@ const getDefaultState = () => {
 const state = getDefaultState()
 
 const mutations = {
-  RESET_STATE: (state) => {
-    Object.assign(state, getDefaultState())
-  },
   SET_TOKEN: (state, token) => {
     state.token = token
+  },
+  SET_ID: (state, id) => {
+    state.id = id
+  },
+  SET_ORGANS: (state, organs) => {
+    state.organs = organs
+  },
+  SET_MANAGECOMPANIES: (state, manageCompanies) => {
+    state.manageCompanies = manageCompanies
   },
   SET_NAME: (state, name) => {
     state.name = name
@@ -33,7 +40,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(userInfo)
         .then(response => {
-          console.log(response)
           const { data } = response
           commit('SET_TOKEN', data)
           setToken(data)
