@@ -20,7 +20,6 @@ service.interceptors.request.use(
         return config
       }
     }
-    debugger
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
@@ -98,7 +97,8 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
+    console.log(error)
+    console.log(error.response) // for debug
     Message({
       message: error.message,
       type: 'error',
