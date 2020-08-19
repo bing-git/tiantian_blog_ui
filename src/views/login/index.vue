@@ -81,6 +81,7 @@
 <script>
 import { validUserId } from '@/utils/validate'
 import { getCaptcha, getPublicKey } from '@/api/login'
+import { JSEncrypt } from 'jsencrypt'
 
 export default {
   name: 'Login',
@@ -107,7 +108,6 @@ export default {
         captchaKey: ''
       },
       loginRules: {
-        userId: [{ required: true, trigger: 'blur', validator: validateUserId }],
         pwd: [{ required: true, trigger: 'blur', validator: validatePwd }]
       },
       loading: false,
@@ -126,10 +126,10 @@ export default {
       immediate: true
     }
   },
-  // created() {
-  //   this.updateCaptcha()
-  //   this.setPublicKey()
-  // },
+  created() {
+    this.updateCaptcha()
+    this.setPublicKey()
+  },
   methods: {
     setPublicKey() {
       getPublicKey()
@@ -144,7 +144,7 @@ export default {
       getCaptcha()
         .then(res => {
           // 转换
-          this.codeImg = 'data:image/png;base64,' + res.data.image
+          this.imageCode = 'data:image/png;base64,' + res.data.image
           this.loginForm.captchaKey = res.data.key
         })
         .catch(err => {
@@ -175,10 +175,15 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          const encrypt = new JSEncrypt()
+          encrypt.setPublicKey(this.publicKey)
+          this.loginForm.pwd = encrypt.encrypt(this.loginForm.pwd)
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
-          }).catch(() => {
+          }).catch(err => {
+            console.log(err)
+            this.updateCaptcha()
             this.loading = false
           })
         } else {
