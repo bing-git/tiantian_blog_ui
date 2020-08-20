@@ -5,8 +5,8 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
-    id: '',
-    name: '',
+    userId: '',
+    userName: '',
     avatar: ''
   }
 }
@@ -17,8 +17,8 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_ID: (state, id) => {
-    state.id = id
+  SET_USERID: (state, userId) => {
+    state.userId = userId
   },
   SET_ORGANS: (state, organs) => {
     state.organs = organs
@@ -26,8 +26,8 @@ const mutations = {
   SET_MANAGECOMPANIES: (state, manageCompanies) => {
     state.manageCompanies = manageCompanies
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_NAME: (state, userName) => {
+    state.userName = userName
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
@@ -55,15 +55,13 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
-
         if (!data) {
-          return reject('Verification failed, please Login again.')
+          return reject('登录失败，请重新登录！')
         }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        commit('SET_NAME', data.userName)
+        // 头像地址，后期改成服务器内地址
+        commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+        // "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
         resolve(data)
       }).catch(error => {
         reject(error)

@@ -79,20 +79,13 @@
 </template>
 
 <script>
-import { validUserId } from '@/utils/validate'
 import { getCaptcha, getPublicKey } from '@/api/login'
 import { JSEncrypt } from 'jsencrypt'
+import DES from '@/utils/DES-crypto'
 
 export default {
   name: 'Login',
   data() {
-    const validateUserId = (rule, value, callback) => {
-      if (!validUserId(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
     const validatePwd = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('The password can not be less than 6 digits'))
@@ -121,7 +114,8 @@ export default {
   watch: {
     $route: {
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+        // 将用户在登录页面输入的url作为参数传入路由对象，只有正确登录后才会跳转下个页面
+        this.redirect = route.query && DES.decrypt(route.query.redirect)
       },
       immediate: true
     }
