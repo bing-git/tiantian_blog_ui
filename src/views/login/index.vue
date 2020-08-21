@@ -175,8 +175,7 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
-          }).catch(err => {
-            console.log(err)
+          }).catch(() => {
             this.updateCaptcha()
             this.loading = false
           })

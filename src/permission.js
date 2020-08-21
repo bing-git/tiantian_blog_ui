@@ -84,7 +84,6 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()
@@ -104,10 +103,9 @@ function routerGo(to, next) {
     mainRoutes[1].children.push(route)
   }
   remoteRouters = mainRoutes // 过滤路由
-  // 404 page must be placed at the end !!!
   remoteRouters.push({ path: '*', redirect: '/404', hidden: true })
-  // console.log(remoteRouters)
   router.addRoutes(remoteRouters) // 动态添加路由
+  console.log(remoteRouters)
   next({ ...to, replace: true })
 }
 
@@ -173,7 +171,7 @@ function isJsonString(str) {
       return true
     }
   } catch (e) {
-    console.log(e)
+    console.log()
   }
   return false
 }
