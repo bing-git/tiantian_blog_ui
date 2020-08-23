@@ -105,7 +105,6 @@ function routerGo(to, next) {
   remoteRouters = mainRoutes // 过滤路由
   remoteRouters.push({ path: '*', redirect: '/404', hidden: true })
   router.addRoutes(remoteRouters) // 动态添加路由
-  console.log(remoteRouters)
   next({ ...to, replace: true })
 }
 
