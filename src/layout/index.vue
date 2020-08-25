@@ -25,7 +25,7 @@ export default {
   mixins: [ResizeMixin],
   computed: {
     sidebar() {
-      return this.$store.state.app.sidebar
+      return this.$store.state.router.menus
     },
     device() {
       return this.$store.state.app.device
