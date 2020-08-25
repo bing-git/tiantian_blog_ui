@@ -30,7 +30,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       getRouter()
         .then(res => {
-          // console.log(res)
           const { data } = res
           commit('SET_ROUTERS', data)
           // 去除hidden===1的项目
