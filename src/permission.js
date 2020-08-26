@@ -100,7 +100,7 @@ function routerGo(to, next) {
   const mainRoutes = router.options.routes
   const filtedRoutes = filterAsyncRouter(remoteRouters)
   for (const route of filtedRoutes) {
-    mainRoutes[1].children.push(route)
+    mainRoutes.push(route)
   }
   remoteRouters = mainRoutes // 过滤路由
   remoteRouters.push({ path: '*', redirect: '/404', hidden: true })
