@@ -1,140 +1,121 @@
 <template>
-  <div class="container">
-    <el-input
-      v-model="filterText"
-      placeholder="输入关键字进行查询"
-    />
-    <!-- 左侧权限树 -->
-    <div class="side" style="width:22%">
-      <el-tree
-        v-loading="loading"
-        style="overflow:auto;height:490px;"
-        :data="privTreeList"
-        :props="defaultProps"
-        @node-click="handleNodeClick"
-      />
+  <el-card class="body-card">
+    <div slot="header" class="clearfix">
+      <span>菜单配置</span>
     </div>
-    <!-- 右侧权限信息 -->
-    <div ref="info" class="info">
-      <el-header class="header">
-        <span class="text">基本信息</span>
-      </el-header>
-      <el-form
-        ref="priv"
-        :rules="rules"
-        class="form"
-        :inline="true"
-        :model="priv"
-      ><ct-row>
-         <ct-col :span="12">
-           <el-form-item label="权限编码" prop="code">
-             <el-input
-               v-model="priv.code"
-               style="width:250%"
-               placeholder="必填"
-             />
-           </el-form-item>
-         </ct-col>
-         <ct-col :span="12">
-           <el-form-item label="上级权限">
-             <el-input
-               v-model="priv.parentName"
-               style="width:250%"
-               readonly="readonly"
-             />
-           </el-form-item>
-         </ct-col>
-       </ct-row>
-        <ct-row>
-          <ct-col :span="12">
-            <el-form-item label="权限名称" prop="name">
-              <el-input
-                v-model="priv.name"
-                style="width:250%"
-                placeholder="必填"
-              />
-            </el-form-item>
-          </ct-col>
-          <ct-col :span="12">
-            <el-form-item label="是否菜单">
-              <el-radio v-model="priv.isMenu" label="1">是</el-radio>
-              <el-radio v-model="priv.isMenu" label="0">否</el-radio>
-            </el-form-item>
-          </ct-col>
-        </ct-row>
-        <ct-row>
-          <ct-col :span="24">
-          &nbsp;
-            <el-form-item label="菜单URL">
-              <el-input v-model="priv.url" style="width:550%" />
-            </el-form-item>
-          </ct-col>
-        </ct-row>
-        <ct-row>
-          <ct-col :span="12">
-            <el-form-item label="菜单排序" prop="sortId">
-              <el-input
-                v-model="priv.sortId"
-                style="width:250%"
-                placeholder="必填"
-                @input="isNum(priv.sortId)"
-              />
-            </el-form-item>
-          </ct-col>
-          <ct-col :span="12">
-            <el-form-item label="是否生效">
-              <el-radio v-model="priv.status" label="10">是</el-radio>
-              <el-radio v-model="priv.status" label="20">否</el-radio>
-            </el-form-item>
-          </ct-col>
-        </ct-row>
-        <ct-row>
-          <ct-col :span="12">
-          &nbsp;
-            <el-form-item label="前端组件">
-              <el-input v-model="priv.component" style="width:250%" />
-            </el-form-item>
-          </ct-col>
-          <ct-col :span="12">
-            <el-form-item label="是否隐藏路由">
-              <el-radio v-model="priv.hidden" label="1">是</el-radio>
-              <el-radio v-model="priv.hidden" label="0">否</el-radio>
-            </el-form-item>
-          </ct-col>
-        </ct-row>
-        <ct-row>
-          <ct-col :span="12">
-          &nbsp;&nbsp;&nbsp;&nbsp;
-            <el-form-item label="重定向">
-              <el-input v-model="priv.redirect" style="width:250%" />
-            </el-form-item>
-          </ct-col>
-          <ct-col :span="12">
-            <el-form-item label="别名">
-              <el-input v-model="priv.alias" style="width:250%" />
-            </el-form-item>
-          </ct-col>
-        </ct-row>
-        <ct-row>
-          <ct-col :span="24">
-            <ct-button v-if="priv.parentId !== 0" @click="add">新增</ct-button>
-            <ct-button
-              v-if="priv.parentId !== 10 && priv.parentId !== 0"
-              @click="save('priv')"
-            >
-              保存
-            </ct-button>
-          </ct-col>
-        </ct-row>
-      </el-form>
-    </div>
-  </div>
+    <el-container style="border: 1px solid #eee">
+      <el-aside width="25%" style="background-color: rgb(238, 241, 246)">
+        <!-- 左侧权限树 -->
+        <el-tree
+          v-loading="loading"
+          :data="privTreeList"
+          :props="defaultProps"
+          @node-click="handleNodeClick"
+        />
+      </el-aside>
+      <el-main width="75%">
+        <el-header class="header">
+          <span class="text">基本信息</span>
+        </el-header>
+        <el-form ref="priv" :model="priv" label-width="100px" :rules="rules" lable-position="left">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="权限编码" prop="code">
+                <el-input v-model="priv.code" placeholder="必填" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="上级编码">
+                <el-input v-model="priv.parentName" placeholder="必填" readonly="readonly" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="权限名称" prop="name">
+                <el-input v-model="priv.name" placeholder="必填" readonly="readonly" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="是否菜单">
+                <el-radio-group v-model="priv.isMenu">
+                  <el-radio label="1">是</el-radio>
+                  <el-radio label="0">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="菜单URL">
+                <el-input v-model="priv.url" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="菜单排序" prop="sortId">
+                <el-input v-model="priv.sortId" placeholder="必填" @input="isNum(priv.sortId)" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="是否生效">
+                <el-radio-group v-model="priv.status">
+                  <el-radio label="10">是</el-radio>
+                  <el-radio label="20">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="前端组件">
+                <el-input v-model="priv.component" placeholder="必填" @input="isNum(priv.sortId)" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="隐藏路由">
+                <el-radio-group v-model="priv.hidden">
+                  <el-radio label="1">是</el-radio>
+                  <el-radio label="0">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="重定向">
+                <el-input v-model="priv.redirect" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="别名">
+                <el-input v-model="priv.alias" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="23" :offset="1">
+              <el-button v-if="priv.parentId !== 0" @click="add">新增</el-button>
+              <el-button
+                v-if="priv.parentId !== 10 && priv.parentId !== 0"
+                @click="save('priv')"
+              >
+                保存
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-form>
+      </el-main>
+    </el-container>
+  </el-card>
 </template>
 <script>
 import { getMenuTree, save } from '@/api/base/menu'
 export default {
   data() {
     return {
+      labelPosition: 'left',
       rules: {
         code: [
           {
@@ -159,7 +140,7 @@ export default {
         ]
       },
       priv: {
-        id: '',
+        privId: '',
         code: '',
         parentName: '',
         parentId: '',
@@ -206,12 +187,9 @@ export default {
     // data:当前节点数据  node:当前节点
     handleNodeClick(data, node) {
       // 点击权限树展示权限对应信息
-      this.$refs.info.style.display = 'block'
-      this.$refs.info.style.float = 'right'
-
-      this.priv.id = data.id
+      this.priv.privId = data.privId
       this.priv.code = data.code
-      if (data.id !== '1') {
+      if (data.privId !== '1') {
         this.priv.parentName = node.parent.data.name
       } else {
         this.priv.parentName = ''
@@ -242,7 +220,7 @@ export default {
                 message: '保存成功',
                 type: 'success'
               })
-              this.getprivTree()
+              this.getMenuTree()
             } else {
               this.$message({
                 showClose: true,
@@ -266,11 +244,11 @@ export default {
       }
     },
     add() {
-      this.priv.parentId = this.priv.id
+      this.priv.parentId = this.priv.privId
       if (this.priv.name !== '') {
         this.priv.parentName = this.priv.name
       }
-      this.priv.id = ''
+      this.priv.privId = ''
       this.priv.code = ''
       this.priv.name = ''
       this.priv.url = ''
@@ -284,6 +262,22 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+  .body-card{
+    width: 80%;
+    margin:1% auto;
+  }
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+    clear: both;
+  }
+  .el-card__header{
+    background-color: #20a0ff;
+  }
+  .header {
+    text-align: center;
+    font-size: 20px;
+  }
 </style>
