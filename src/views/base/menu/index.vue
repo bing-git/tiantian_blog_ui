@@ -20,7 +20,7 @@
         <el-form ref="priv" :model="priv" label-width="100px" :rules="rules" lable-position="left">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="权限编码" prop="code">
+              <el-form-item label="菜单编码" prop="code">
                 <el-input v-model="priv.code" placeholder="必填" />
               </el-form-item>
             </el-col>
@@ -32,8 +32,8 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="权限名称" prop="name">
-                <el-input v-model="priv.name" placeholder="必填" readonly="readonly" />
+              <el-form-item label="菜单名称" prop="name">
+                <el-input v-model="priv.name" placeholder="必填" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -120,14 +120,14 @@ export default {
         code: [
           {
             required: true,
-            message: '请输入权限编码',
+            message: '请输入菜单编码',
             trigger: 'blur'
           }
         ],
         name: [
           {
             required: true,
-            message: '请输入权限名称',
+            message: '请输入菜单名称',
             trigger: 'blur'
           }
         ],
