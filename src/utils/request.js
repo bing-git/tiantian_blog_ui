@@ -100,7 +100,8 @@ service.interceptors.response.use(
     console.log(error)
     console.log(error.response) // for debug
     Message({
-      message: error.message,
+      message: error.response.data.message,
+      showClose: true,
       type: 'error',
       duration: 5 * 1000
     })
