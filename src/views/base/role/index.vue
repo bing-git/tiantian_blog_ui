@@ -62,7 +62,7 @@
 
 <script>
 import { deepClone } from '@/utils'
-import { addRole, deleteRole, getMenu, getMenuByRole, getRoles, openRole, updateRole } from '@/api/base/role'
+import { addRole, deleteRole, getMenu, getMenuByRole, getRoles, openRole, updateRole} from '@/api/base/role'
 
 const defaultRole = {
   roleId: '',
@@ -186,7 +186,7 @@ export default {
     async confirmRole() {
       const isEdit = this.dialogType === '授权'
 
-      this.role.routes = this.$refs.tree.getCheckedKeys()
+      this.role.routes = this.$refs.tree.getCheckedKeys().concat(this.$refs.tree.getHalfCheckedKeys())
       if (isEdit) {
         updateRole(this.role).then(() => {
           this.getRoles()
