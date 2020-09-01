@@ -62,7 +62,7 @@
 
 <script>
 import { deepClone } from '@/utils'
-import { addRole, deleteRole, getMenu, getMenuByRole, getRoles, openRole, updateRole} from '@/api/base/role'
+import { addRole, deleteRole, getMenu, getMenuByRole, getRoles, openRole, updateRole } from '@/api/base/role'
 
 const defaultRole = {
   roleId: '',
