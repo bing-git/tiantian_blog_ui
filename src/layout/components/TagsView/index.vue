@@ -43,10 +43,10 @@ export default {
   computed: {
     visitedViews() {
       return this.$store.state.tagsView.visitedViews
-    }/*,
+    },
     routes() {
-      return this.$store.state.permission.routes
-    }*/
+      return this.$router.options.routes
+    }
   },
   watch: {
     $route() {
@@ -106,7 +106,6 @@ export default {
     },
     addTags() {
       const { name } = this.$route
-      console.log(name)
       if (name) {
         this.$store.dispatch('tagsView/addView', this.$route)
       }
