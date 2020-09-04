@@ -177,6 +177,8 @@ export default {
             this.loading = false
           }).catch(() => {
             this.updateCaptcha()
+            this.loginForm.pwd = ''
+            this.loginForm.userId = ''
             this.loading = false
           })
         } else {

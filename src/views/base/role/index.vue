@@ -33,11 +33,11 @@
     </el-table>
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='授权'?'编辑角色':'新增角色'">
-      <el-form :model="role" label-width="80px" label-position="left">
-        <el-form-item label="角色名称">
+      <el-form :model="role" label-width="80px" label-position="left" :rules="rules">
+        <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="role.roleName" placeholder="角色名称" />
         </el-form-item>
-        <el-form-item label="角色编码">
+        <el-form-item label="角色编码" prop="roleCode">
           <el-input v-model="role.roleCode" placeholder="角色名称" />
         </el-form-item>
         <el-form-item label="角色菜单">
@@ -74,9 +74,27 @@ const defaultRole = {
 
 export default {
   data() {
+    const validateRoleName = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入菜单名称'))
+      } else {
+        callback()
+      }
+    }
+    const validateRoleCode = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入菜单编码'))
+      } else {
+        callback()
+      }
+    }
     return {
       role: Object.assign({}, defaultRole),
       routes: [],
+      rules: {
+        roleName: [{ validator: validateRoleName, trigger: 'blur' }],
+        roleCode: [{ validator: validateRoleCode, trigger: 'blur' }]
+      },
       rolesList: [],
       dialogVisible: false,
       dialogType: '新增',
@@ -183,30 +201,50 @@ export default {
         })
         .catch(err => { console.error(err) })
     },
-    async confirmRole() {
-      const isEdit = this.dialogType === '授权'
-
-      this.role.routes = this.$refs.tree.getCheckedKeys().concat(this.$refs.tree.getHalfCheckedKeys())
+    editRole(isEdit) {
       if (isEdit) {
-        updateRole(this.role).then(() => {
-          this.getRoles()
-        })
-        this.$message({
-          showClose: true,
-          type: 'success',
-          message: '修改成功'
+        updateRole(this.role).then(res => {
+          if (res.code === 1) {
+            this.$message({
+              showClose: true,
+              message: '修改成功',
+              type: 'success'
+            })
+            this.getRoles()
+          }
+        }).catch(err => {
+          alert(err)
         })
       } else {
-        addRole(this.role).then(() => {
-          this.getRoles()
-        })
-        this.$message({
-          showClose: true,
-          type: 'success',
-          message: '新增成功'
+        addRole(this.role).then(res => {
+          if (res.code === 1) {
+            this.$message({
+              showClose: true,
+              message: '新增成功',
+              type: 'success'
+            })
+            this.getRoles()
+          }
+        }).catch(err => {
+          console.log(err)
         })
       }
       this.dialogVisible = false
+    },
+    async confirmRole() {
+      const isEdit = this.dialogType === '授权'
+      this.role.routes = this.$refs.tree.getCheckedKeys().concat(this.$refs.tree.getHalfCheckedKeys())
+      if (this.role.routes.length === 0) {
+        this.$confirm('该角色菜单为空，默认赋予一级、二级菜单', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          this.editRole(isEdit)
+        }).catch(e => e)
+      } else {
+        this.editRole(isEdit)
+      }
     }
   }
 }

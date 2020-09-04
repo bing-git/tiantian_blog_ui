@@ -51,7 +51,7 @@ service.interceptors.response.use(
     // 当获得后台发来的新JWT时，刷新token防止过期
     // 203状态码代表token认证失败
     if (response.status === 200) {
-      const token = response.headers['Access-Token']
+      const token = response.config.headers['Access-Token']
       if (typeof token !== undefined && token != null && token !== '') {
         store.dispatch('user/setToken', token).then(() => {})
       }
