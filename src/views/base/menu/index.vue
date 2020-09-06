@@ -244,19 +244,23 @@ export default {
       }
     },
     add() {
-      this.priv.parentId = this.priv.privId
-      if (this.priv.name !== '') {
-        this.priv.parentName = this.priv.name
-      }
-      this.priv.privId = ''
-      this.priv.code = ''
-      this.priv.name = ''
-      this.priv.url = ''
-      this.priv.sortId = ''
-      this.priv.component = ''
-      this.priv.hidden = '0'
-      this.priv.redirect = ''
-      this.priv.alias = ''
+      this.$refs['priv'].validate(valid => {
+        if (valid) {
+          this.priv.parentId = this.priv.privId
+          if (this.priv.name !== '') {
+            this.priv.parentName = this.priv.name
+          }
+          this.priv.privId = ''
+          this.priv.code = ''
+          this.priv.name = ''
+          this.priv.url = ''
+          this.priv.sortId = ''
+          this.priv.component = ''
+          this.priv.hidden = '0'
+          this.priv.redirect = ''
+          this.priv.alias = ''
+        }
+      })
     }
   }
 }
@@ -274,7 +278,8 @@ export default {
     clear: both;
   }
   .el-card__header{
-    background-color: #20a0ff;
+    background-color: #304156;
+    color: #bfcbd9;
   }
   .header {
     text-align: center;
