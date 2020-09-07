@@ -16,7 +16,15 @@ export function getRoleByUser(data) {
   })
 }
 
-export function saveUser(data) {
+export function updateUser(data) {
+  return request({
+    url: '/user/updateUser',
+    method: 'post',
+    data: data
+  })
+}
+
+export function insertUser(data) {
   return request({
     url: '/user/insertUser',
     method: 'post',

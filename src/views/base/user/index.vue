@@ -29,10 +29,16 @@
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='编辑'?'编辑用户':'新增用户'">
       <el-form ref="userInfo" :model="user" label-width="80px" label-position="left" :rules="rules">
         <el-form-item label="账号" prop="userId">
-          <el-input v-model="user.userId" placeholder="账号" prop="userId" />
+          <el-input v-model="user.userId" :readonly="dialogType==='编辑'" placeholder="账号" prop="userId" />
         </el-form-item>
         <el-form-item label="用户名称" prop="userName">
           <el-input v-model="user.userName" placeholder="用户名称" prop="userName" />
+        </el-form-item>
+        <el-form-item v-if="dialogType==='编辑'" label="旧密码" prop="pwd">
+          <el-input v-model="user.pwd" placeholder="旧密码" prop="pwd" type="password" />
+        </el-form-item>
+        <el-form-item v-if="dialogType==='编辑'" label="新密码" prop="password">
+          <el-input v-model="user.password" placeholder="新密码" prop="password" type="password" />
         </el-form-item>
         <el-form-item label="角色列表">
           <el-tree
@@ -55,25 +61,38 @@
 </template>
 
 <script>
-import { getUsers, getRoleByUser, resetPwd, saveUser } from '@/api/base/user'
+import { getUsers, getRoleByUser, resetPwd, updateUser, insertUser } from '@/api/base/user'
 import { getRoles } from '@/api/base/role'
 import Pagination from '@/components/Pagination'
 import { deepClone } from '@/utils'
+import { JSEncrypt } from 'jsencrypt'
+import { getPublicKey } from '@/api/login'
 
 const userInfo = {
   userId: '',
   userName: '',
   pwd: '',
-  status: ''
+  status: '',
+  password: ''
 }
 
 export default {
   components: { Pagination },
   data() {
+    const validatePassword = (rule, value, callback) => {
+      if (this.user.pwd != null && this.user.pwd !== '' && (value === '' || value === undefined)) {
+        callback(new Error('请输入新密码'))
+      } else if (value !== undefined && value.length < 6) {
+        callback(new Error('新密码长度必须超过6位!'))
+      } else {
+        callback()
+      }
+    }
     return {
       rules: {
         userId: [{ required: true, message: '请选择输入账号', trigger: 'blur' }],
-        userName: [{ required: true, message: '请输入用户名称', trigger: 'blur' }]
+        userName: [{ required: true, message: '请输入用户名称', trigger: 'blur' }],
+        password: [{ required: true, validator: validatePassword, trigger: 'blur' }]
       },
       user: Object.assign({}, userInfo),
       listLoading: true,
@@ -90,7 +109,8 @@ export default {
       dialogVisible: false,
       dialogType: '新增',
       checkStrictly: false,
-      roles: []
+      roles: [],
+      pubKey: ''
     }
   },
   computed: {
@@ -101,6 +121,7 @@ export default {
   created() {
     this.getUsers()
     this.getRoles()
+    this.setPublicKey()
   },
   methods: {
     async getRoles() {
@@ -147,13 +168,47 @@ export default {
         )
       })
     },
+    setPublicKey() {
+      getPublicKey()
+        .then(res => {
+          this.pubKey = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     confirmUser() {
       this.$refs['userInfo'].validate(valid => {
         if (valid) {
           this.user.roles = this.$refs.tree.getCheckedKeys().concat(this.$refs.tree.getHalfCheckedKeys())
-          saveUser(this.user).then(res => {
-            console.log(res)
-          })
+          if (this.dialogType === '编辑') {
+            // RSA加密新旧密码，传递至后台
+            const encrypt = new JSEncrypt()
+            encrypt.setPublicKey(this.pubKey)
+            // 新密码
+            this.user.pwd = encrypt.encrypt(this.user.pwd)
+            // 旧密码
+            this.user.password = encrypt.encrypt(this.user.password)
+            updateUser(this.user).then(res => {
+              if (res.code === 1) {
+                this.$message({
+                  showClose: true,
+                  message: '修改成功',
+                  type: 'success'
+                })
+              }
+            })
+          } else {
+            insertUser(this.user).then(res => {
+              if (res.code === 1) {
+                this.$message({
+                  showClose: true,
+                  message: '新增成功',
+                  type: 'success'
+                })
+              }
+            })
+          }
         }
       })
     },
